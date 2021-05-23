@@ -204,17 +204,109 @@
   },
   "projectRoot": "C:\\repos\\MutationTestingBlog\\MutationTesting.Example",
   "files": {
+    "Scoreboard.cs": {
+      "language": "cs",
+      "source": "using System.Collections.Generic;\r\nusing System.Collections.ObjectModel;\r\nusing System.Linq;\r\n\r\nnamespace MutationTesting.Example\r\n{\r\n    public class Scoreboard\r\n    {\r\n        public readonly List<" + "StudentScore> Scores = new List<" + "StudentScore>();\r\n\r\n        // inspired by AddItem method in https://github.com/dotnet-architecture/eShopOnWeb/blob/master/src/ApplicationCore/Entities/BasketAggregate/Basket.cs\r\n        public void AddScore(Student student, int score)\r\n        {\r\n            if (!Scores.Any(_ => _.Student.Equals(student)))\r\n            {\r\n                Scores.Add(new StudentScore(student, score));\r\n                return;\r\n            }\r\n            var existingScore = Scores.FirstOrDefault(_ => _.Student.Equals(student));\r\n            existingScore.AddScore(score);\r\n        }\r\n\r\n        public int GetScore(Student student)\r\n        {\r\n            return Scores.Where(_ => _.Student.Equals(student))\r\n                .Select(_ => _.Score)\r\n                .FirstOrDefault();\r\n        }\r\n    }\r\n}",
+      "mutants": [
+        {
+          "id": "0",
+          "mutatorName": "LogicalNotExpression to un-LogicalNotExpression mutation",
+          "replacement": "Scores.Any(_ => _.Student.Equals(student))",
+          "location": {
+            "start": {
+              "line": 14,
+              "column": 17
+            },
+            "end": {
+              "line": 14,
+              "column": 60
+            }
+          },
+          "status": "Killed"
+        },
+        {
+          "id": "1",
+          "mutatorName": "Linq method mutation (Any() to All())",
+          "replacement": "Scores.All(_ => _.Student.Equals(student))",
+          "location": {
+            "start": {
+              "line": 14,
+              "column": 18
+            },
+            "end": {
+              "line": 14,
+              "column": 60
+            }
+          },
+          "status": "Killed"
+        },
+        {
+          "id": "2",
+          "mutatorName": "Linq method mutation (FirstOrDefault() to First())",
+          "replacement": "Scores.First(_ => _.Student.Equals(student))",
+          "location": {
+            "start": {
+              "line": 19,
+              "column": 33
+            },
+            "end": {
+              "line": 19,
+              "column": 86
+            }
+          },
+          "status": "Survived"
+        },
+        {
+          "id": "3",
+          "mutatorName": "Linq method mutation (FirstOrDefault() to First())",
+          "replacement": "Scores.Where(_ => _.Student.Equals(student))\r\n                .Select(_ => _.Score)\r\n                .First()",
+          "location": {
+            "start": {
+              "line": 25,
+              "column": 20
+            },
+            "end": {
+              "line": 27,
+              "column": 34
+            }
+          },
+          "status": "Killed"
+        }
+      ]
+    },
     "Student.cs": {
       "language": "cs",
-      "source": "using System;\r\n\r\nnamespace MutationTesting.Example\r\n{\r\n    public class Student\r\n    {\r\n        public int Age { get; private set; }\r\n\r\n        public bool HasPaid { get; private set; }\r\n\r\n        public Student(int age, bool hasPaid)\r\n        {\r\n            this.Age = age;\r\n            this.HasPaid = hasPaid;\r\n        }\r\n    }\r\n}\r\n",
+      "source": "using System;\r\n\r\nnamespace MutationTesting.Example\r\n{\r\n    public class Student\r\n    {\r\n        public int Age { get; }\r\n\r\n        public bool HasPaid { get; }\r\n\r\n        public Student(int age, bool hasPaid)\r\n        {\r\n            this.Age = age;\r\n            this.HasPaid = hasPaid;\r\n        }\r\n    }\r\n}\r\n",
       "mutants": []
+    },
+    "StudentScore.cs": {
+      "language": "cs",
+      "source": "namespace MutationTesting.Example\r\n{\r\n    public class StudentScore\r\n    {\r\n        public Student Student { get; }\r\n        public int Score { get; private set; }\r\n\r\n        public StudentScore(Student student, int score)\r\n        {\r\n            Student = student;\r\n            Score = score;\r\n        }\r\n\r\n        public void AddScore(int score)\r\n        {\r\n            Score += score;\r\n        }\r\n    }\r\n}",
+      "mutants": [
+        {
+          "id": "4",
+          "mutatorName": "AddAssignmentExpression to SubtractAssignmentExpression mutation",
+          "replacement": "            Score -=score",
+          "location": {
+            "start": {
+              "line": 16,
+              "column": 13
+            },
+            "end": {
+              "line": 16,
+              "column": 27
+            }
+          },
+          "status": "Killed"
+        }
+      ]
     },
     "StudentValidator.cs": {
       "language": "cs",
       "source": "namespace MutationTesting.Example\r\n{\r\n    public class StudentValidator\r\n    {\r\n        public static bool IsValid(Student student)\r\n        {\r\n            return student.Age >= 18 && student.HasPaid;\r\n        }\r\n    }\r\n}",
       "mutants": [
         {
-          "id": "0",
+          "id": "5",
           "mutatorName": "Logical mutation",
           "replacement": "student.Age >= 18 || student.HasPaid",
           "location": {
@@ -230,7 +322,7 @@
           "status": "Killed"
         },
         {
-          "id": "1",
+          "id": "6",
           "mutatorName": "Equality mutation",
           "replacement": "student.Age <" + " 18 ",
           "location": {
@@ -246,7 +338,7 @@
           "status": "Killed"
         },
         {
-          "id": "2",
+          "id": "7",
           "mutatorName": "Equality mutation",
           "replacement": "student.Age > 18 ",
           "location": {

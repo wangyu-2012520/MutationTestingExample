@@ -4,9 +4,9 @@ namespace MutationTesting.Example
 {
     public class Student
     {
-        public int Age { get; private set; }
+        public int Age { get; }
 
-        public bool HasPaid { get; private set; }
+        public bool HasPaid { get; }
 
         public Student(int age, bool hasPaid)
         {
