@@ -16,7 +16,9 @@ namespace MutationTesting.Example
                 Scores.Add(new StudentScore(student, score));
                 return;
             }
-            var existingScore = Scores.FirstOrDefault(_ => _.Student.Equals(student));
+            // We cannot kill the mutation FirstOrDefault, because it actually is not valid.
+            // The previous if statement ensures that the score exists, thus we will never get null.
+            var existingScore = Scores.First(_ => _.Student.Equals(student));
             existingScore.AddScore(score);
         }
 
