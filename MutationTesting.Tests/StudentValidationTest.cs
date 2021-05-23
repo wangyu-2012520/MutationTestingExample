@@ -25,5 +25,15 @@ namespace MutationTesting.Tests
 
             Assert.False(isValid);
         }
+        
+        [Fact]
+        public void IsAdultAndHasNotPaid_IsNotValid()
+        {
+            var student = new Student(18, false);
+
+            var isValid = StudentValidator.IsValid(student);
+
+            Assert.False(isValid);
+        }
     }
 }
