@@ -16,6 +16,7 @@ namespace MutationTesting.Example
                 Scores.Add(new StudentScore(student, score));
                 return;
             }
+            // Stryker disable once Linq
             // We cannot kill the mutation FirstOrDefault, because it actually is not valid.
             // The previous if statement ensures that the score exists, thus we will never get null.
             var existingScore = Scores.First(_ => _.Student.Equals(student));
